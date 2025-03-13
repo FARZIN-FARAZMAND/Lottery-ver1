@@ -25,17 +25,30 @@
             border-radius: 10px;
         }
         .participant {
-            display: inline-block;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin: 5px;
             padding: 5px 10px;
             background-color: #007bff;
             color: white;
             border-radius: 15px;
             font-size: 14px;
-            cursor: pointer;
         }
-        .participant:hover {
-            background-color: #0056b3;
+        .participant span {
+            margin-left: 10px;
+        }
+        .delete-button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .delete-button:hover {
+            background-color: #c82333;
         }
         #input-section {
             margin-top: 20px;
@@ -101,7 +114,7 @@
 </head>
 <body>
 
-    <h1>قرعه‌کشی</h1>
+    <h1>قرعه‌کشی با حذف نام</h1>
     <div id="participants-list"></div>
 
     <div id="input-section">
@@ -109,7 +122,7 @@
         <button id="add-button" onclick="addParticipant()">افزودن نام</button>
     </div>
 
-    <button id="draw-button" onclick="startLottery()">قرعه‌کشی کن</button>
+    <button id="draw-button" onclick="startLottery()">قرعه‌کشی کن!</button>
     <div id="spinner"></div>
     <div id="result"></div>
 
@@ -117,7 +130,7 @@
        
         let participants = [];
 
-       
+      
         function addParticipant() {
             const input = document.getElementById('name-input');
             const name = input.value.trim();
@@ -129,7 +142,7 @@
 
             participants.push(name);
             updateParticipantsList();
-            input.value = ""; 
+            input.value = "";
         }
 
       
@@ -137,11 +150,25 @@
             const listDiv = document.getElementById('participants-list');
             listDiv.innerHTML = ""; 
 
-            participants.forEach((name) => {
+            participants.forEach((name, index) => {
                 const participantDiv = document.createElement('div');
                 participantDiv.className = 'participant';
-                participantDiv.textContent = name;
 
+               
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = name;
+
+              
+                const deleteButton = document.createElement('button');
+                deleteButton.className = 'delete-button';
+                deleteButton.textContent = 'حذف';
+                deleteButton.onclick = () => {
+                    participants.splice(index, 1); 
+                    updateParticipantsList(); 
+                };
+
+                participantDiv.appendChild(nameSpan);
+                participantDiv.appendChild(deleteButton);
                 listDiv.appendChild(participantDiv);
             });
         }
@@ -154,29 +181,29 @@
                 return;
             }
 
-           
+          
             const drawButton = document.getElementById('draw-button');
             drawButton.disabled = true;
 
-           
+          
             const spinner = document.getElementById('spinner');
             spinner.style.display = 'block';
 
-          
+      
             setTimeout(() => {
                 const randomIndex = Math.floor(Math.random() * participants.length);
                 const winner = participants[randomIndex];
 
-               
+             
                 participants.splice(randomIndex, 1);
 
                
                 updateParticipantsList();
 
-             
+               
                 document.getElementById('result').textContent = `برنده: ${winner}`;
 
-               
+              
                 spinner.style.display = 'none';
                 drawButton.disabled = false;
             }, 3000); 
