@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قرعه‌کشی با حذف برنده</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        #participants-list {
+            margin: 20px auto;
+            padding: 10px;
+            max-width: 400px;
+            border: 2px dashed #ccc;
+            min-height: 100px;
+            background-color: #fff;
+            border-radius: 10px;
+        }
+        .participant {
+            display: inline-block;
+            margin: 5px;
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .participant:hover {
+            background-color: #0056b3;
+        }
+        #input-section {
+            margin-top: 20px;
+        }
+        #name-input {
+            padding: 10px;
+            width: 200px;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+        }
+        #add-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #add-button:hover {
+            background-color: #218838;
+        }
+        #draw-button {
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #ffc107;
+            color: black;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        #draw-button:hover {
+            transform: scale(1.1);
+        }
+        #spinner {
+            display: none;
+            margin: 20px auto;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #dc3545;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>قرعه‌کشی</h1>
+    <div id="participants-list"></div>
+
+    <div id="input-section">
+        <input type="text" id="name-input" placeholder="نام را وارد کنید">
+        <button id="add-button" onclick="addParticipant()">افزودن نام</button>
+    </div>
+
+    <button id="draw-button" onclick="startLottery()">قرعه‌کشی کن</button>
+    <div id="spinner"></div>
+    <div id="result"></div>
+
+    <script>
+       
+        let participants = [];
+
+       
+        function addParticipant() {
+            const input = document.getElementById('name-input');
+            const name = input.value.trim();
+
+            if (name === "") {
+                alert("لطفاً یک نام وارد کنید!");
+                return;
+            }
+
+            participants.push(name);
+            updateParticipantsList();
+            input.value = ""; 
+        }
+
+      
+        function updateParticipantsList() {
+            const listDiv = document.getElementById('participants-list');
+            listDiv.innerHTML = ""; 
+
+            participants.forEach((name) => {
+                const participantDiv = document.createElement('div');
+                participantDiv.className = 'participant';
+                participantDiv.textContent = name;
+
+                listDiv.appendChild(participantDiv);
+            });
+        }
+
+       
+        function startLottery() {
+            if (participants.length === 0) {
+                alert("لیست شرکت‌کنندگان خالی است!");
+                document.getElementById('result').textContent = "همه نام‌ها انتخاب شدند!";
+                return;
+            }
+
+           
+            const drawButton = document.getElementById('draw-button');
+            drawButton.disabled = true;
+
+           
+            const spinner = document.getElementById('spinner');
+            spinner.style.display = 'block';
+
+          
+            setTimeout(() => {
+                const randomIndex = Math.floor(Math.random() * participants.length);
+                const winner = participants[randomIndex];
+
+               
+                participants.splice(randomIndex, 1);
+
+               
+                updateParticipantsList();
+
+             
+                document.getElementById('result').textContent = `برنده: ${winner}`;
+
+               
+                spinner.style.display = 'none';
+                drawButton.disabled = false;
+            }, 3000); 
+        }
+    </script>
+
+</body>
+</html>
